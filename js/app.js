@@ -1,9 +1,10 @@
 var map;
 var markers = [];
+var largeInfowindow;
 
     function mapIni()
     {
-      var largeInfowindow = new google.maps.InfoWindow();
+      largeInfowindow = new google.maps.InfoWindow();
       var bounds = new google.maps.LatLngBounds();
       map = new google.maps.Map(document.getElementById("map"),
       {
@@ -69,6 +70,7 @@ var markers = [];
             if (result.response.groups[0].items[0]) {
               console.log(result)
               var category = result.response.groups[0].items[0].venue.categories[0].name
+              fourSquareContent = fourSquareContent + '<div>'+category+'</div>';
             }
         }).fail(function() {
             fourSquareContent = fourSquareContent + '<div> Cannot load Foursquare content</div>';
@@ -130,6 +132,13 @@ var ViewModel = function() {
     locations.forEach(function(loc){
       self.locList.push(loc.name);
     });
+
+    self.clickMarker = function(data){
+      var locs = [];
+      const marker = markers.find( marker => marker.title === data);
+      toggleBounce(marker);
+      populateInfoWindow(marker, largeInfowindow)
+    }
 
 
 }

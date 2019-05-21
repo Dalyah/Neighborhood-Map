@@ -17,7 +17,7 @@
         <div class="col-sm-3 black">
             <input type="text" class="form-control" id="filterInput" placeholder="Filter Place" onkeyup="filterLoc()" />
             <ul id ="locUL" data-bind="foreach: locList" >
-                <li data-bind="text: $data">
+                <li data-bind="text: $data, click: $parent.clickMarker">
                 </li>
             </ul>
         </div>
