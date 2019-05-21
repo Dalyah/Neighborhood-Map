@@ -135,7 +135,6 @@ var ViewModel = function() {
     });
 
     self.clickMarker = function(data){
-      var locs = [];
       const marker = markers.find( marker => marker.title === data);
       toggleBounce(marker);
       populateInfoWindow(marker, largeInfowindow)
