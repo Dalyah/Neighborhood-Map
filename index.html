@@ -14,19 +14,14 @@
         <div class="col-sm-8"></div>
     </div>
     <div class="row">
-        <div class="col-sm-4 black">
-            <form class="class="form-inline"">
-                <input type="text" class="form-control" id="filterLoc" placeholder="Place" />
-                <button type="submit">Filter</button>
-            </form>
-            <ul data-bind="foreach: locList" >
+        <div class="col-sm-3 black">
+            <input type="text" class="form-control" id="filterInput" placeholder="Filter Place" onkeyup="filterLoc()" />
+            <ul id ="locUL" data-bind="foreach: locList" >
                 <li data-bind="text: $data">
-
                 </li>
-
             </ul>
         </div>
-        <div class="col-sm-8 Gmap">
+        <div class="col-sm-9 Gmap">
             <div id="map">
 
             </div>
