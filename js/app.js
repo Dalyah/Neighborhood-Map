@@ -74,7 +74,6 @@ function populateInfoWindow(marker, infowindow) {
 		var CLIENT_SECRET = "T3ESFKYUUTRAZPQGZG5IGOWKENS4QMSPVN21L353JXS55Q1H";
 		$.getJSON("https://api.foursquare.com/v2/venues/explore?client_id=" + CLIENT_ID + "&client_secret=" + CLIENT_SECRET + "&v=20180323&limit=1&ll=" + marker.position.lat() + "," + marker.position.lng() + "&query=" + marker.title).done(function(result) {
 			if (result.response.groups[0].items[0]) {
-				console.log(result)
 				var category = result.response.groups[0].items[0].venue.categories[0].name
 				fourSquareContent = fourSquareContent + '<div>' + category + '</div>';
 			}
@@ -123,15 +122,11 @@ var ViewModel = function() {
 	};
 	// called when filter button is clicked
 	self.filter = function(name) {
-		console.log("filter Function is being executed");
 		var filterMarkers = [];
 		ko.utils.arrayForEach(self.filterList(), function(loc) {
 			const marker = markers.find(marker => marker.title === loc);
 			filterMarkers.push(marker);
 		});
-		// console.log(filterMarkers);
-		// console.log(markers);
-		// console.log(locations);
 		displayMarker(filterMarkers);
 	}
 }
