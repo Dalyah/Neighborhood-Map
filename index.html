@@ -16,8 +16,12 @@
     </div>
     <div class="row">
         <div class="col-sm-3 black">
-            <input type="text" class="form-control" id="filterInput" placeholder="Filter Place" onkeyup="filterLoc()" />
-            <ul id ="locUL" data-bind="foreach: locList" >
+            <form class="form-inline" data-bind="submit: filter">
+                <input type="text" class="form-control"
+                data-bind="textInput: currentFilter" placeholder="Filter Place"  />
+                <button class="form-control" type="submit">Filter</button>
+            </form>
+            <ul id ="locUL" data-bind="foreach: filterList" >
                 <li data-bind="text: $data, click: $parent.clickMarker">
                 </li>
             </ul>
@@ -38,7 +42,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGt7RJ8LxRbHng5iCmT2n3LjbFuhPbg1g&v=3&callback=mapIni"
-    onerror="handelError()">
-      </script>
+    onerror="handelError()"></script>
+
 </body>
 </html>

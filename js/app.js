@@ -1,7 +1,7 @@
 var map;
 var markers = [];
 var largeInfowindow;
-
+var filterLocs = locations;
     function mapIni()
     {
       largeInfowindow = new google.maps.InfoWindow();
@@ -11,7 +11,6 @@ var largeInfowindow;
         center : {lat: 24.798161, lng: 46.768052},
         zoom: 14
       });
-
     // create default markers
     createMarkers(locations);
     }
@@ -19,7 +18,8 @@ var largeInfowindow;
     // create markers of locations
     function createMarkers(locs)
     {
-      var largeInfowindow = new google.maps.InfoWindow();
+      clearMarkers()
+      // var largeInfowindow = new google.maps.InfoWindow();
       locs.forEach(function(loc){
         // add default markers
         var marker = new google.maps.Marker({
@@ -33,10 +33,27 @@ var largeInfowindow;
           marker.addListener('click', function() {
             populateInfoWindow(this, largeInfowindow);
             // animate marker
-            toggleBounce(marker)
+            toggleBounce(marker);
           });
         });
     }
+
+    // the function displays only the passed filterMarkers
+    function displayMarker(filterMarkers)
+    {
+        for (i = 0; i < markers.length; i++) {
+            if (filterMarkers.includes(markers[i]))
+            {
+                markers[i].setMap(map);
+            }
+            else
+            {
+                markers[i].setMap(null);
+            }
+        }
+
+     }
+
 
     // function to handel map loading Error
     function handlError(){
@@ -49,6 +66,9 @@ var largeInfowindow;
          marker.setAnimation(null);
        } else {
          marker.setAnimation(google.maps.Animation.BOUNCE);
+         setTimeout(function () {
+         marker.setAnimation(null);
+            }, 3000);
        }
      }
 
@@ -95,51 +115,48 @@ var largeInfowindow;
       }
     }
 
-    // to filter locations on the list and on the map
-    function filterLoc(){
-      // Declare variables
-      var filter, ul, li, i, txtValue;
-      let filteredLocs = [];
-      filter = document.getElementById('filterInput').value.toUpperCase();
-      ul = document.getElementById("locUL");
-      li = ul.getElementsByTagName('li');
-
-      // filter loc List
-      for (i = 0; i < li.length; i++) {
-        txtValue = li[i].textContent || li[i].innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-          li[i].style.display = "";
-          const location = locations.find( loc => loc.name === txtValue);
-          console.log(location);
-          filteredLocs.push(location);
-        } else {
-          li[i].style.display = "none";
-        }
-      }
-      console.log(filteredLocs);
-      // filter markers
-      clearMarkers()
-      createMarkers(filteredLocs);
-
-    }
-
 var ViewModel = function() {
   let self = this;
   this.title = ko.observable("My Neighborhood Map")
-  this.locList = ko.observableArray([]);
+  this.locList =  ko.observableArray([]);
   this.filterList = ko.observableArray([]);
+  this.currentFilter = ko.observable();
 
   // fill locList
     locations.forEach(function(loc){
       self.locList.push(loc.name);
     });
 
+    self.filterList = ko.computed(function() {
+        if(!self.currentFilter()) {
+            return self.locList();
+        } else {
+            return ko.utils.arrayFilter(self.locList(), function(loc) {
+                return loc.toUpperCase().indexOf(self.currentFilter().toUpperCase()) !== -1;
+            });
+        }
+    });
+
+    // called when a marker is clicked
     self.clickMarker = function(data){
       const marker = markers.find( marker => marker.title === data);
       toggleBounce(marker);
       populateInfoWindow(marker, largeInfowindow)
-    }
+    };
 
+    // called when filter button is clicked
+    self.filter = function(name) {
+        console.log("filter Function is being executed");
+        var filterMarkers = [];
+        ko.utils.arrayForEach(self.filterList(), function(loc){
+          const marker = markers.find( marker => marker.title === loc);
+          filterMarkers.push(marker);
+        });
+        // console.log(filterMarkers);
+        // console.log(markers);
+        // console.log(locations);
+        displayMarker(filterMarkers);
+    }
 
 }
 
